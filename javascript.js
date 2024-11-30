@@ -1,77 +1,88 @@
-function getCompChoice() {
-    const choices = ['rock', 'paper', 'scissor']; // Declare as local with const
-    const randNum = Math.floor(Math.random() * 3); // Generates a random number from 0 - 2
-    const choice = choices[randNum]; // Selects one choice out of 3
-    console.log(randNum);
-    console.log(choice);
-    return choice;
-}
+function playGame() {
+    // Variables to store scores
+    let compScore = 0;
+    let humanScore = 0;
 
-const compChoice = getCompChoice(); // Generate a computer choice
-console.log(`Computer chose: ${compChoice}`);
+    // Function to generate the computer's choice
+    function getCompChoice() {
+        const choices = ['rock', 'paper', 'scissor'];
+        const randNum = Math.floor(Math.random() * 3);
+        return choices[randNum];
+    }
 
-function getHumanChoice() {
-    const choices = ['rock', 'paper', 'scissor']; // Declare as local with const
-    const input = prompt("Please enter your choice: 0:'rock' 1:'paper' 2:'scissor'"); // Prompt human for input
-    const humanChoice = choices[input];
+    // Function to get the human player's choice
+    function getHumanChoice() {
+        const choices = ['rock', 'paper', 'scissor'];
+        const input = prompt("Please enter your choice: 0:'rock' 1:'paper' 2:'scissor'");
+        const humanChoice = choices[input];
 
+        if (humanChoice === 'rock' || humanChoice === 'paper' || humanChoice === 'scissor') {
+            return humanChoice;
+        } else {
+            console.log("Invalid choice. Please try again.");
+            return null;
+        }
+    }
 
-    // Validate human input
-    if (humanChoice === 'rock' || humanChoice === 'paper' || humanChoice === 'scissor') {
+    // Function to play a single round
+    function playRound(compChoice, humanChoice) {
+        console.log(`You chose: ${humanChoice}`);
+        console.log(`Computer chose: ${compChoice}`);
 
-        return humanChoice;
+        if (compChoice === humanChoice) {
+            console.log("It's a draw.");
+        } else if (
+            (compChoice === 'rock' && humanChoice === 'scissor') ||
+            (compChoice === 'paper' && humanChoice === 'rock') ||
+            (compChoice === 'scissor' && humanChoice === 'paper')
+        ) {
+            console.log("Computer Wins this round.");
+            compScore++;
+        } else {
+            console.log("You Win this round!");
+            humanScore++;
+        }
+
+        console.log(`Scores -> You: ${humanScore}, Computer: ${compScore}`);
+    }
+
+    // Loop to play 5 rounds
+    let round = 1;
+    while (round <= 5) {
+        console.log(`Round ${round}`);
+
+        let validChoice = false; // Flag to check for valid input
+
+        while (!validChoice) {
+            const humanChoice = getHumanChoice(); // Get user's choice
+            if (humanChoice) {
+                const compChoice = getCompChoice(); // Generate computer's choice
+                playRound(compChoice, humanChoice); // Play the round
+                validChoice = true; // Exit validation loop
+            }
+        }
+
+        round++; // Increment round only if valid
+    }
+
+    // Declare the final winner
+    console.log("Game Over!");
+    if (humanScore > compScore) {
+        console.log(`Congratulations! You won the game with a score of ${humanScore} to ${compScore}.`);
+    } else if (compScore > humanScore) {
+        console.log(`Computer wins the game with a score of ${compScore} to ${humanScore}. Better luck next time!`);
     } else {
-        console.log("Please input a valid choice.");
-        return null;
+        console.log("The game is a draw!");
+    }
+
+    // Ask the user if they want to play again
+    const playAgain = prompt("Do you want to play again? (yes/no)").toLowerCase();
+    if (playAgain === 'yes') {
+        playGame(); // Restart the game
+    } else {
+        console.log("Thanks for playing! Goodbye!");
     }
 }
 
-const humanChoice = getHumanChoice(); // Get human choice
-if (humanChoice) {
-
-}
-console.log(`You chose: ${humanChoice}`);
-console.log(`Computer chose: ${compChoice}`);
-
-// Variables to store scores
-let compScore = 0;
-let humanScore = 0;
-
-
-
-function playRound(compChoice, humanChoice) {
-    const normalizedHumanChoice = humanChoice.toLowerCase(); // Case sensitive normalized
-    if (compChoice === humanChoice) {
-        drawGame(compChoice, humanChoice, compScore, humanScore);
-    }
-    else if ((compChoice === 'rock' && humanChoice === 'scissor') || (compChoice === 'paper' && humanChoice === 'rock ') || (compChoice === 'scissor' && humanChoice === 'paper')) {
-        compWin(compChoice, humanChoice, compScore, humanScore);
-    }
-    else {
-        humanWin(compChoice, humanChoice, compScore, humanScore);
-    }
-}
-
-function drawGame(compChoice, humanChoice, compScore, userScore) {
-    console.log(`It's a draw. Computer choose ${compChoice} and you choose ${humanChoice}`);
-    compScore++;
-    userScore++;
-    console.log(`your score: ${userScore} Computer score: ${compScore} `)
-
-}
-
-
-function compWin(compChoice, humanChoice, compScore, humanScore) {
-    console.log(`Computer Wins. Computer choose ${compChoice} and you choose ${humanChoice}`);
-    compScore++;
-    console.log(`your score: ${humanScore} Computer score: ${compScore} `)
-}
-//Results after human win
-function humanWin(compChoice, humanChoice, compScore, humanScore) {
-    console.log(`You Win. Computer choose ${compChoice} and you choose ${humanChoice}`);
-    humanScore++;
-    console.log(`your score: ${humanScore} Computer score: ${compScore} `)
-}
-
-
-playRound(compChoice, humanChoice);
+// Call the main function to start the game
+playGame();
